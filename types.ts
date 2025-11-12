@@ -8,11 +8,12 @@ export interface WardrobeItem {
 }
 
 export interface OutfitLayer {
-  garment: WardrobeItem; // Garment can no longer be null in the history
-  poseImages: Record<string, string>; // Maps pose instruction to image URL
+  garment: WardrobeItem; // Each layer must have a garment
+  // A map from pose instruction to the generated image URL for that pose with this garment.
+  poseImages: Record<string, string>;
 }
 
 export interface UserModel {
-    id: 'currentUser';
-    imageUrl: string;
+  id: 'currentUser';
+  imageUrl: string;
 }

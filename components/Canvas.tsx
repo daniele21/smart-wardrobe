@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RotateCcwIcon, ChevronLeftIcon, ChevronRightIcon } from './icons';
+import { RotateCcwIcon, ChevronLeftIcon, ChevronRightIcon, ChevronUpIcon } from './icons';
 import Spinner from './Spinner';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -67,7 +67,7 @@ const Canvas: React.FC<CanvasProps> = ({ displayImageUrl, onStartOver, isLoading
   };
   
   return (
-    <div className="w-full h-full flex items-center justify-center p-4 relative animate-zoom-in group">
+    <div className="w-full h-full flex items-center justify-center p-4 relative animate-zoom-in">
       {/* Start Over Button */}
       <button 
           onClick={onStartOver}
@@ -113,9 +113,7 @@ const Canvas: React.FC<CanvasProps> = ({ displayImageUrl, onStartOver, isLoading
       {/* Pose Controls */}
       {displayImageUrl && !isLoading && isPoseChangeEnabled && (
         <div 
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          onMouseEnter={() => setIsPoseMenuOpen(true)}
-          onMouseLeave={() => setIsPoseMenuOpen(false)}
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30"
         >
           {/* Pose popover menu */}
           <AnimatePresence>
@@ -125,15 +123,18 @@ const Canvas: React.FC<CanvasProps> = ({ displayImageUrl, onStartOver, isLoading
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
-                      className="absolute bottom-full mb-3 w-64 bg-white/80 backdrop-blur-lg rounded-xl p-2 border border-gray-200/80"
+                      className="absolute bottom-full mb-3 w-64 bg-white/80 backdrop-blur-lg rounded-xl p-2 border border-gray-200/80 shadow-lg"
                   >
                       <div className="grid grid-cols-2 gap-2">
                           {poseInstructions.map((pose, index) => (
                               <button
                                   key={pose}
-                                  onClick={() => onSelectPose(index)}
+                                  onClick={() => {
+                                      onSelectPose(index);
+                                      setIsPoseMenuOpen(false);
+                                  }}
                                   disabled={isLoading || index === currentPoseIndex}
-                                  className="w-full text-left text-sm font-medium text-gray-800 p-2 rounded-md hover:bg-gray-200/70 disabled:opacity-50 disabled:bg-gray-200/70 disabled:font-bold disabled:cursor-not-allowed"
+                                  className="w-full text-left text-sm font-medium text-gray-800 p-2 rounded-md hover:bg-gray-200/70 disabled:bg-gray-200/70 disabled:font-bold disabled:cursor-not-allowed"
                               >
                                   {pose}
                               </button>
@@ -143,7 +144,7 @@ const Canvas: React.FC<CanvasProps> = ({ displayImageUrl, onStartOver, isLoading
               )}
           </AnimatePresence>
           
-          <div className="flex items-center justify-center gap-2 bg-white/60 backdrop-blur-md rounded-full p-2 border border-gray-300/50">
+          <div className="flex items-center justify-center gap-2 bg-white/60 backdrop-blur-md rounded-full p-2 border border-gray-300/50 shadow-md">
             <button 
               onClick={handlePreviousPose}
               aria-label="Previous pose"
@@ -152,9 +153,14 @@ const Canvas: React.FC<CanvasProps> = ({ displayImageUrl, onStartOver, isLoading
             >
               <ChevronLeftIcon className="w-5 h-5 text-gray-800" />
             </button>
-            <span className="text-sm font-semibold text-gray-800 w-48 text-center truncate" title={poseInstructions[currentPoseIndex]}>
-              {poseInstructions[currentPoseIndex]}
-            </span>
+            <button 
+              onClick={() => setIsPoseMenuOpen(prev => !prev)}
+              className="flex items-center gap-2 text-sm font-semibold text-gray-800 w-48 text-center truncate px-2 py-1 rounded-md hover:bg-white/80"
+              title={poseInstructions[currentPoseIndex]}
+            >
+              <span className="flex-grow text-center">{poseInstructions[currentPoseIndex]}</span>
+              <ChevronUpIcon className={`w-4 h-4 transition-transform duration-200 ${isPoseMenuOpen ? 'rotate-180' : ''}`} />
+            </button>
             <button 
               onClick={handleNextPose}
               aria-label="Next pose"

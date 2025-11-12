@@ -1,36 +1,38 @@
-
-const DB_NAME = "virtualTryOnDB";
+const DB_NAME = 'VirtualTryOnDB';
 const DB_VERSION = 1;
-export const USER_MODEL_STORE = "userModel";
+export const USER_MODEL_STORE = 'userModel';
+export const CACHE_STORE = 'apiCache';
 
-let dbPromise: Promise<IDBDatabase> | null = null;
+let db: IDBDatabase;
 
 const openDB = (): Promise<IDBDatabase> => {
-  if (dbPromise) {
-    return dbPromise;
-  }
+  return new Promise((resolve, reject) => {
+    if (db) {
+      return resolve(db);
+    }
 
-  dbPromise = new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
     request.onerror = () => {
       console.error("IndexedDB error:", request.error);
-      reject("Error opening database");
+      reject(new Error("Failed to open IndexedDB."));
     };
 
     request.onsuccess = () => {
-      resolve(request.result);
+      db = request.result;
+      resolve(db);
     };
 
-    request.onupgradeneeded = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      if (!db.objectStoreNames.contains(USER_MODEL_STORE)) {
-        db.createObjectStore(USER_MODEL_STORE, { keyPath: "id" });
+    request.onupgradeneeded = () => {
+      const tempDb = request.result;
+      if (!tempDb.objectStoreNames.contains(USER_MODEL_STORE)) {
+        tempDb.createObjectStore(USER_MODEL_STORE, { keyPath: 'id' });
+      }
+      if (!tempDb.objectStoreNames.contains(CACHE_STORE)) {
+        tempDb.createObjectStore(CACHE_STORE, { keyPath: 'key' });
       }
     };
   });
-
-  return dbPromise;
 };
 
 export default openDB;

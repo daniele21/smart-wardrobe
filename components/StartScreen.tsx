@@ -97,8 +97,8 @@ const StartScreen: React.FC<StartScreenProps> = ({ onModelFinalized }) => {
           </div>
           <div className="w-full lg:w-1/2 flex flex-col items-center justify-center">
             <Compare
-              firstImage="https://storage.googleapis.com/gemini-95-icons/asr-tryon.jpg"
-              secondImage="https://storage.googleapis.com/gemini-95-icons/asr-tryon-model.png"
+              firstImage="https://raw.githubusercontent.com/daniele21/smart-wardrobe/refs/heads/main/examples/profile-photo-4MB-crop.jpg"
+              secondImage="https://raw.githubusercontent.com/daniele21/smart-wardrobe/refs/heads/main/examples/stand-profile.png"
               slideMode="drag"
               className="w-full max-w-sm aspect-[2/3] rounded-2xl bg-gray-200"
             />

@@ -4,7 +4,8 @@ import { OutfitLayer } from '../types';
 import { Trash2Icon, PlusIcon } from './icons';
 
 interface OutfitStackProps {
-  outfitHistory: OutfitLayer[];
+  // FIX: Loosen the type to allow for the "Base Model" layer which has a null garment.
+  outfitHistory: (OutfitLayer | { garment: null })[];
   onRemoveLastGarment: () => void;
   onAddGarment: () => void;
 }

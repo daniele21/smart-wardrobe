@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, GenerateContentResponse, Modality } from "@google/genai";
 
 const fileToPart = async (file: File) => {
@@ -61,7 +60,8 @@ export const generateModelImage = async (userImage: File): Promise<string> => {
         model,
         contents: { parts: [userImagePart, { text: prompt }] },
         config: {
-            responseModalities: [Modality.IMAGE, Modality.TEXT],
+            // FIX: The responseModalities array must contain exactly one modality.
+            responseModalities: [Modality.IMAGE],
         },
     });
     return handleApiResponse(response);
@@ -82,7 +82,8 @@ export const generateVirtualTryOnImage = async (modelImageUrl: string, garmentIm
         model,
         contents: { parts: [modelImagePart, garmentImagePart, { text: prompt }] },
         config: {
-            responseModalities: [Modality.IMAGE, Modality.TEXT],
+            // FIX: The responseModalities array must contain exactly one modality.
+            responseModalities: [Modality.IMAGE],
         },
     });
     return handleApiResponse(response);
@@ -95,7 +96,8 @@ export const generatePoseVariation = async (tryOnImageUrl: string, poseInstructi
         model,
         contents: { parts: [tryOnImagePart, { text: prompt }] },
         config: {
-            responseModalities: [Modality.IMAGE, Modality.TEXT],
+            // FIX: The responseModalities array must contain exactly one modality.
+            responseModalities: [Modality.IMAGE],
         },
     });
     return handleApiResponse(response);
