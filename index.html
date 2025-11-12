@@ -11,8 +11,26 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              serif: ['Instrument Serif', 'serif'],
+              sans: ['var(--font-sans)', 'sans-serif'],
+              serif: ['var(--font-serif)', 'serif'],
+            },
+            colors: {
+              primary: 'hsl(var(--primary))',
+              'primary-content': 'hsl(var(--primary-content))',
+              secondary: 'hsl(var(--secondary))',
+              'secondary-content': 'hsl(var(--secondary-content))',
+              accent: 'hsl(var(--accent))',
+              'accent-content': 'hsl(var(--accent-content))',
+              neutral: 'hsl(var(--neutral))',
+              'neutral-content': 'hsl(var(--neutral-content))',
+              'base-100': 'hsl(var(--base-100))',
+              'base-200': 'hsl(var(--base-200))',
+              'base-300': 'hsl(var(--base-300))',
+              'base-content': 'hsl(var(--base-content))',
+              info: 'hsl(var(--info))',
+              success: 'hsl(var(--success))',
+              warning: 'hsl(var(--warning))',
+              error: 'hsl(var(--error))',
             },
           }
         }
@@ -25,7 +43,6 @@
           "react": "https://esm.sh/react@^19.1.0",
           "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
           "@google/genai": "https://esm.sh/@google/genai@^1.10.0",
-          "react-image-crop": "https://esm.sh/react-image-crop@^11.0.6",
           "framer-motion": "https://esm.sh/framer-motion@^11.2.12",
           "clsx": "https://esm.sh/clsx@^2.1.1",
           "tailwind-merge": "https://esm.sh/tailwind-merge@^2.4.0",
@@ -38,7 +55,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://esm.sh/react-image-crop@^11.0.6/dist/ReactCrop.css" />
   </head>
   <body>
     <div id="root"></div>
