@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 export const ShirtIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -107,6 +106,24 @@ export const Trash2Icon = (props: React.SVGProps<SVGSVGElement>) => (
     <line x1="14" y1="11" x2="14" y2="17" />
   </svg>
 );
+
+export const EditIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  );
 
 export const ChevronLeftIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -228,5 +245,45 @@ export const MenuIcon = (props: React.SVGProps<SVGSVGElement>) => (
       <line x1="3" y1="12" x2="21" y2="12"></line>
       <line x1="3" y1="6" x2="21" y2="6"></line>
       <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+);
+
+export const Wand2Icon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+        {...props}
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+    >
+        <path d="m9.2 2.6 3.8 3.8" />
+        <path d="m12.4 3.4 2.8 2.8" />
+        <path d="m21.4 12.6-6-6L4 18l6 6 11.4-11.4Z" />
+        <path d="m16 7 3-3" />
+        <path d="m11.4 17.6 3.8 3.8" />
+        <path d="m14.6 18.4 2.8 2.8" />
+    </svg>
+);
+
+export const CropIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+        {...props}
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+    >
+        <path d="M6 2v14a2 2 0 0 0 2 2h14" />
+        <path d="M18 22V8a2 2 0 0 0-2-2H2" />
     </svg>
 );

@@ -87,7 +87,7 @@ const Canvas: React.FC<CanvasProps> = ({ displayImageUrl, onStartOver, isLoading
             className="max-w-full max-h-full object-contain transition-opacity duration-500 animate-fade-in rounded-lg"
           />
         ) : (
-            <div className="w-[400px] h-[600px] bg-gray-100 border border-gray-200 rounded-lg flex flex-col items-center justify-center">
+            <div className="w-[400px] h-[400px] bg-gray-100 border border-gray-200 rounded-lg flex flex-col items-center justify-center">
               <Spinner />
               <p className="text-md font-serif text-gray-600 mt-4">Loading Model...</p>
             </div>

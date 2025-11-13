@@ -1,11 +1,16 @@
-
 import React, { useState, useMemo } from 'react';
 import { WardrobeItem, ItemCategory } from '../types';
-import { UploadCloudIcon, Trash2Icon } from './icons';
+import { UploadCloudIcon, Trash2Icon, EditIcon } from './icons';
+import EditWardrobeItemModal from './EditWardrobeItemModal';
+import { AnimatePresence } from 'framer-motion';
+import * as wardrobeRepo from '../db/wardrobeRepository';
+import Spinner from './Spinner';
 
 interface WardrobePageProps {
   wardrobe: WardrobeItem[];
   setWardrobe: React.Dispatch<React.SetStateAction<WardrobeItem[]>>;
+  onOpenUploadModal: () => void;
+  isLoading: boolean;
 }
 
 // Mapping from English category keys to Italian display names.
@@ -17,8 +22,8 @@ const ITALIAN_CATEGORIES: Record<ItemCategory, string> = {
   accessory: 'Accessori',
 };
 
-const WardrobePage: React.FC<WardrobePageProps> = ({ wardrobe, setWardrobe }) => {
-  const [error, setError] = useState<string | null>(null);
+const WardrobePage: React.FC<WardrobePageProps> = ({ wardrobe, setWardrobe, onOpenUploadModal, isLoading }) => {
+  const [editingItem, setEditingItem] = useState<WardrobeItem | null>(null);
 
   // Group items by their category for rendering.
   const groupedWardrobe = useMemo(() => {
@@ -42,34 +47,37 @@ const WardrobePage: React.FC<WardrobePageProps> = ({ wardrobe, setWardrobe }) =>
 
   }, [wardrobe]);
 
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      if (!file.type.startsWith('image/')) {
-        setError('Please select an image file.');
-        return;
-      }
-      
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const newItem: WardrobeItem = {
-          id: `custom-${Date.now()}`,
-          name: file.name.split('.').slice(0, -1).join('.') || 'Custom Item',
-          url: event.target?.result as string,
-          category: 'top', // Default category, could be expanded with a form
-        };
-        setWardrobe(prev => [...prev, newItem]);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleDeleteItem = (itemId: string) => {
+  const handleDeleteItem = async (itemId: string) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
-      setWardrobe(prev => prev.filter(item => item.id !== itemId));
+        try {
+            await wardrobeRepo.deleteWardrobeItem(itemId);
+            setWardrobe(prev => prev.filter(item => item.id !== itemId));
+        } catch (error) {
+            console.error("Failed to delete item", error);
+            // You might want to show an error to the user here
+        }
     }
   };
+
+  const handleSaveItem = async (updatedItem: WardrobeItem) => {
+    try {
+        await wardrobeRepo.updateWardrobeItem(updatedItem);
+        setWardrobe(prev => prev.map(item => item.id === updatedItem.id ? updatedItem : item));
+        setEditingItem(null);
+    } catch (error) {
+        console.error("Failed to update item", error);
+        // You might want to show an error to the user here
+    }
+  };
+
+  if (isLoading) {
+    return (
+        <div className="flex flex-col items-center justify-center h-full text-center p-4">
+            <Spinner />
+            <p className="mt-4 text-lg text-gray-600 font-serif">Loading your wardrobe...</p>
+        </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -78,14 +86,14 @@ const WardrobePage: React.FC<WardrobePageProps> = ({ wardrobe, setWardrobe }) =>
             <h1 className="text-4xl font-serif font-bold text-gray-900">Personal Wardrobe</h1>
             <p className="mt-1 text-gray-600">Manage your saved and uploaded items.</p>
         </div>
-        <label htmlFor="wardrobe-upload" className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded-md cursor-pointer hover:bg-gray-700 transition-colors">
+        <button 
+          onClick={onOpenUploadModal}
+          className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded-md cursor-pointer hover:bg-gray-700 transition-colors"
+        >
             <UploadCloudIcon className="w-5 h-5 mr-2" />
             Add New Item
-        </label>
-        <input id="wardrobe-upload" type="file" className="hidden" accept="image/png, image/jpeg, image/webp, image/avif, image/heic, image/heif" onChange={handleFileChange} />
+        </button>
       </div>
-
-       {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
       
       {wardrobe.length > 0 ? (
         <div className="space-y-10">
@@ -98,18 +106,27 @@ const WardrobePage: React.FC<WardrobePageProps> = ({ wardrobe, setWardrobe }) =>
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="relative group aspect-square border rounded-lg overflow-hidden"
+                    className="relative group aspect-square border rounded-lg overflow-hidden bg-white"
                   >
-                    <img src={item.url} alt={item.name} className="w-full h-full object-cover" />
+                    <img src={item.url} alt={item.name} className="w-full h-full object-contain" />
                     <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <p className="text-white text-sm font-bold text-center">{item.name}</p>
-                      <button
-                          onClick={() => handleDeleteItem(item.id)}
-                          className="absolute top-2 right-2 p-1.5 bg-white/20 rounded-full text-white hover:bg-red-500 transition-colors"
-                          aria-label={`Delete ${item.name}`}
-                      >
-                          <Trash2Icon className="w-4 h-4" />
-                      </button>
+                       <div className="absolute top-2 right-2 flex flex-col gap-2">
+                          <button
+                              onClick={() => setEditingItem(item)}
+                              className="p-1.5 bg-white/20 rounded-full text-white hover:bg-blue-500 transition-colors"
+                              aria-label={`Edit ${item.name}`}
+                          >
+                              <EditIcon className="w-4 h-4" />
+                          </button>
+                          <button
+                              onClick={() => handleDeleteItem(item.id)}
+                              className="p-1.5 bg-white/20 rounded-full text-white hover:bg-red-500 transition-colors"
+                              aria-label={`Delete ${item.name}`}
+                          >
+                              <Trash2Icon className="w-4 h-4" />
+                          </button>
+                       </div>
                     </div>
                   </div>
                 ))}
@@ -123,6 +140,16 @@ const WardrobePage: React.FC<WardrobePageProps> = ({ wardrobe, setWardrobe }) =>
             <p className="text-gray-500 mt-2">Upload your first item to get started!</p>
         </div>
       )}
+
+      <AnimatePresence>
+        {editingItem && (
+            <EditWardrobeItemModal 
+              item={editingItem}
+              onSave={handleSaveItem}
+              onClose={() => setEditingItem(null)}
+            />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

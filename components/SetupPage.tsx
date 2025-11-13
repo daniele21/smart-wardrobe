@@ -34,7 +34,7 @@ const SetupPage: React.FC<SetupPageProps> = ({ poseInstructions }) => {
             <div className="flex-shrink-0 flex flex-col items-center">
                 <h1 className="text-4xl font-serif font-bold text-gray-900">Your Current Model</h1>
                 <p className="mt-2 text-gray-600">This photo is being used for your virtual try-ons.</p>
-                <div className="mt-6 w-full max-w-sm aspect-[2/3] rounded-2xl overflow-hidden shadow-lg border">
+                <div className="mt-6 w-full max-w-sm aspect-square rounded-2xl overflow-hidden shadow-lg border">
                     <img src={modelImageUrl} alt="Current user model" className="w-full h-full object-cover" />
                 </div>
                  <button

@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UploadCloudIcon } from './icons';
@@ -97,10 +96,11 @@ const StartScreen: React.FC<StartScreenProps> = ({ onModelFinalized }) => {
           </div>
           <div className="w-full lg:w-1/2 flex flex-col items-center justify-center">
             <Compare
-              firstImage="https://raw.githubusercontent.com/daniele21/smart-wardrobe/refs/heads/main/examples/profile-photo-4MB-crop.jpg"
-              secondImage="https://raw.githubusercontent.com/daniele21/smart-wardrobe/refs/heads/main/examples/stand-profile.png"
+              firstImage="https://cdn.jsdelivr.net/gh/daniele21/smart-wardrobe@main/examples/profile-photo-4MB-crop.jpg"
+              secondImage="https://cdn.jsdelivr.net/gh/daniele21/smart-wardrobe@main/examples/stand-profile.png"
               slideMode="drag"
-              className="w-full max-w-sm aspect-[2/3] rounded-2xl bg-gray-200"
+              className="w-full max-w-sm aspect-square rounded-2xl bg-gray-200"
+              initialSliderPercentage={0}
             />
           </div>
         </motion.div>
@@ -172,7 +172,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ onModelFinalized }) => {
                 firstImage={userImageUrl}
                 secondImage={generatedModelUrl ?? userImageUrl}
                 slideMode="drag"
-                className="w-[280px] h-[420px] sm:w-[320px] sm:h-[480px] lg:w-[400px] lg:h-[600px] rounded-2xl bg-gray-200"
+                className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] lg:w-[400px] lg:h-[400px] rounded-2xl bg-gray-200"
               />
             </div>
           </div>

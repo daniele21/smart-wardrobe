@@ -1,7 +1,8 @@
 const DB_NAME = 'VirtualTryOnDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2; // Incremented version to trigger upgrade
 export const USER_MODEL_STORE = 'userModel';
 export const CACHE_STORE = 'apiCache';
+export const WARDROBE_STORE = 'wardrobeItems';
 
 let db: IDBDatabase;
 
@@ -30,6 +31,9 @@ const openDB = (): Promise<IDBDatabase> => {
       }
       if (!tempDb.objectStoreNames.contains(CACHE_STORE)) {
         tempDb.createObjectStore(CACHE_STORE, { keyPath: 'key' });
+      }
+      if (!tempDb.objectStoreNames.contains(WARDROBE_STORE)) {
+        tempDb.createObjectStore(WARDROBE_STORE, { keyPath: 'id' });
       }
     };
   });

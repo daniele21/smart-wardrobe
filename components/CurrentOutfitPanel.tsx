@@ -1,60 +1,70 @@
-
 import React from 'react';
-import { OutfitLayer } from '../types';
-import { Trash2Icon, PlusIcon } from './icons';
+import { WardrobeItem, ItemCategory } from '../types';
+import { Trash2Icon, XIcon, PlusIcon } from './icons';
 
-interface OutfitStackProps {
-  // FIX: Loosen the type to allow for the "Base Model" layer which has a null garment.
-  outfitHistory: (OutfitLayer | { garment: null })[];
-  onRemoveLastGarment: () => void;
-  onAddGarment: () => void;
+interface CurrentOutfitPanelProps {
+  selectedGarments: Partial<Record<ItemCategory, WardrobeItem>>;
+  onFitOutfit: () => void;
+  onClearSelection: () => void;
+  onToggleGarment: (item: WardrobeItem) => void;
+  isFitting: boolean;
 }
 
-const OutfitStack: React.FC<OutfitStackProps> = ({ outfitHistory, onRemoveLastGarment, onAddGarment }) => {
+const CurrentOutfitPanel: React.FC<CurrentOutfitPanelProps> = ({ selectedGarments, onFitOutfit, onClearSelection, onToggleGarment, isFitting }) => {
+  const selectedItems = Object.values(selectedGarments).filter(Boolean) as WardrobeItem[];
+
   return (
     <div className="h-full flex flex-col">
-      <h2 className="text-xl font-serif tracking-wider text-gray-800 border-b border-gray-400/50 pb-2 mb-3">Outfit Stack</h2>
+      <div className="flex justify-between items-center border-b border-gray-400/50 pb-2 mb-3">
+        <h2 className="text-xl font-serif tracking-wider text-gray-800">Selected for Fitting</h2>
+        {selectedItems.length > 0 && (
+          <button
+            onClick={onClearSelection}
+            className="text-sm font-semibold text-gray-600 hover:text-red-600 transition-colors"
+            disabled={isFitting}
+          >
+            Clear
+          </button>
+        )}
+      </div>
       <div className="space-y-2 flex-grow">
-        {outfitHistory.map((layer, index) => (
+        {selectedItems.map((item) => (
           <div
-            key={layer.garment?.id || 'base'}
+            key={item.id}
             className="flex items-center justify-between bg-white/50 p-2 rounded-lg animate-fade-in border border-gray-200/80 shadow-sm"
           >
             <div className="flex items-center overflow-hidden">
-                <span className="flex-shrink-0 flex items-center justify-center w-6 h-6 mr-3 text-xs font-bold text-gray-600 bg-gray-200 rounded-full">
-                  {index + 1}
-                </span>
-                {layer.garment && (
-                    <img src={layer.garment.url} alt={layer.garment.name} className="flex-shrink-0 w-12 h-12 object-cover rounded-md mr-3" />
-                )}
-                <span className="font-semibold text-gray-800 truncate" title={layer.garment?.name}>
-                  {layer.garment ? layer.garment.name : 'Base Model'}
-                </span>
+              <img src={item.url} alt={item.name} className="flex-shrink-0 w-12 h-12 object-contain bg-white border rounded-md mr-3" />
+              <div className="flex-grow overflow-hidden">
+                <p className="font-semibold text-gray-800 truncate" title={item.name}>
+                  {item.name}
+                </p>
+                <p className="text-xs text-gray-500 capitalize">{item.category}</p>
+              </div>
             </div>
-            {index > 0 && index === outfitHistory.length - 1 && (
-               <button
-                onClick={onRemoveLastGarment}
-                className="flex-shrink-0 text-gray-500 hover:text-red-600 transition-colors p-2 rounded-md hover:bg-red-50"
-                aria-label={`Remove ${layer.garment?.name}`}
-              >
-                <Trash2Icon className="w-5 h-5" />
-              </button>
-            )}
+            <button
+              onClick={() => onToggleGarment(item)}
+              className="flex-shrink-0 text-gray-500 hover:text-red-600 transition-colors p-2 rounded-md hover:bg-red-50"
+              aria-label={`Remove ${item.name}`}
+              disabled={isFitting}
+            >
+              <XIcon className="w-4 h-4" />
+            </button>
           </div>
         ))}
-        {outfitHistory.length === 1 && (
-            <p className="text-center text-sm text-gray-500 pt-4">Your stacked items will appear here. Start by adding a garment.</p>
+        {selectedItems.length === 0 && (
+            <p className="text-center text-sm text-gray-500 pt-4">Select one item per category from your wardrobe to build an outfit.</p>
         )}
       </div>
        <button 
-          onClick={onAddGarment}
-          className="mt-4 w-full flex items-center justify-center text-center bg-gray-900 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 ease-in-out hover:bg-gray-700 active:scale-95 text-base"
+          onClick={onFitOutfit}
+          disabled={isFitting || selectedItems.length === 0}
+          className="mt-4 w-full flex items-center justify-center text-center bg-gray-900 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-700 active:scale-95 text-base disabled:bg-gray-400 disabled:cursor-not-allowed"
       >
-          <PlusIcon className="w-5 h-5 mr-2" />
-          Add Garment
+          Fit Outfit
       </button>
     </div>
   );
 };
 
-export default OutfitStack;
+export default CurrentOutfitPanel;
